@@ -1,70 +1,279 @@
+<!-- =========================
+LOC DISK - SISTEMA PROFISSIONAL COM DASHBOARD
+========================= -->
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>LocDisk - Sistema</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LocDisk Pro</title>
 
 <style>
-
-body{
-font-family: Arial;
-background:#f4f6f9;
-margin:0;
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f6f9;
 }
 
-header{
-background:#1f4e79;
-color:white;
-padding:20px;
-text-align:center;
+.header {
+    background: #2e7d32;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
 }
 
-.menu{
-width:400px;
-margin:auto;
-margin-top:80px;
-background:white;
-padding:30px;
-border-radius:8px;
-text-align:center;
+.container {
+    max-width: 420px;
+    margin: auto;
+    padding: 15px;
 }
 
-a{
-display:block;
-background:#1f4e79;
-color:white;
-padding:12px;
-margin:10px;
-text-decoration:none;
-border-radius:5px;
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-a:hover{
-background:#163a59;
+h2 { text-align: center; margin: 5px 0 10px; }
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    background: #2e7d32;
+    color: white;
+    font-weight: bold;
+}
+
+button:hover { background: #1b5e20; }
+
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.box {
+    flex: 1;
+    background: #e8f5e9;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#timer {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.alerta {
+    background: red !important;
+    color: white;
+    animation: piscar 1s infinite;
+}
+
+@keyframes piscar {
+    0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;}
+}
 </style>
-
 </head>
 
 <body>
+<div class="header">🚑 LocDisk - Sistema Profissional</div>
+<div class="container">
 
-<header>
-<h1>Sistema LocDisk</h1>
-<p>Transporte de Pacientes</p>
-</header>
+<!-- LOGIN -->
+<div class="card" id="login">
+<h2>Login</h2>
+<select id="tipo">
+<option value="admin">Administrador</option>
+<option value="func">Funcionário</option>
+</select>
+<button onclick="login()">Entrar</button>
+</div>
 
-<div class="menu">
+<!-- DASHBOARD -->
+<div class="card" id="dashboard" style="display:none">
+<h2>Dashboard</h2>
+<div class="dashboard">
+<div class="box">Fila<br><span id="qFila">0</span></div>
+<div class="box">Ativos<br><span id="qAtivo">0</span></div>
+<div class="box">Finalizados<br><span id="qHist">0</span></div>
+</div>
+<button onclick="abrirCadastro()">Cadastrar Paciente</button>
+<button onclick="verFila()">Fila</button>
+<button onclick="verHistorico()">Histórico</button>
+<button onclick="logout()">Sair</button>
+</div>
 
-<h2>Menu Principal</h2>
+<!-- CADASTRO -->
+<div class="card" id="cadastro" style="display:none">
+<h2>Novo Paciente</h2>
+<input id="paciente" placeholder="Paciente">
+<input id="origem" placeholder="Origem">
+<input id="destino" placeholder="Destino">
+<button onclick="cadastrar()">Cadastrar</button>
+<button onclick="voltar()">Voltar</button>
+</div>
 
+<!-- FILA -->
+<div class="card" id="fila" style="display:none">
+<h2>Fila</h2>
+<ul id="listaFila"></ul>
+<button onclick="voltar()">Voltar</button>
+</div>
 
-<a href="login.html">Login</a>
-<a href="cadastro.html">Cadastrar Transporte</a>
-<a href="gestao.html">Gestão de Transportes</a>
-<a href="painel.html">Painel de Controle</a>
+<!-- TRANSPORTE -->
+<div class="card" id="transporte" style="display:none">
+<h2>Em Transporte</h2>
+<p id="info"></p>
+<div id="timer"></div>
+<button onclick="encerrar()">Encerrar</button>
+</div>
+
+<!-- HISTÓRICO -->
+<div class="card" id="historico" style="display:none">
+<h2>Histórico</h2>
+<ul id="listaHist"></ul>
+<button onclick="voltar()">Voltar</button>
+</div>
 
 </div>
+
+<script>
+let atual = null;
+let tipoUser = null;
+
+function login(){
+    tipoUser = document.getElementById('tipo').value;
+    document.getElementById('login').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    atualizarDashboard();
+}
+
+function logout(){ location.reload(); }
+
+function esconder(){
+    ['dashboard','cadastro','fila','historico','transporte'].forEach(id=>{
+        document.getElementById(id).style.display='none';
+    });
+}
+
+function voltar(){ esconder(); document.getElementById('dashboard').style.display='block'; atualizarDashboard(); }
+
+// DASHBOARD
+function atualizarDashboard(){
+    let fila = JSON.parse(localStorage.getItem('fila'))||[];
+    let hist = JSON.parse(localStorage.getItem('hist'))||[];
+
+    document.getElementById('qFila').innerText = fila.length;
+    document.getElementById('qAtivo').innerText = atual ? 1 : 0;
+    document.getElementById('qHist').innerText = hist.length;
+}
+
+// CADASTRO
+function abrirCadastro(){
+    if(tipoUser !== 'admin'){ alert('Apenas admin'); return; }
+    esconder(); document.getElementById('cadastro').style.display='block';
+}
+
+function cadastrar(){
+    let p = paciente.value;
+    let o = origem.value;
+    let d = destino.value;
+
+    let fila = JSON.parse(localStorage.getItem('fila'))||[];
+    fila.push({p,o,d});
+    localStorage.setItem('fila', JSON.stringify(fila));
+    alert('Cadastrado');
+}
+
+// FILA
+function verFila(){ esconder(); document.getElementById('fila').style.display='block'; carregarFila(); }
+
+function carregarFila(){
+    let fila = JSON.parse(localStorage.getItem('fila'))||[];
+    let ul = listaFila; ul.innerHTML='';
+
+    fila.forEach((item,i)=>{
+        let li = document.createElement('li');
+        li.innerHTML = `${item.p} <button onclick="aceitar(${i})">Aceitar</button>`;
+        ul.appendChild(li);
+    });
+}
+
+function aceitar(i){
+    let fila = JSON.parse(localStorage.getItem('fila'))||[];
+    atual = fila[i];
+    fila.splice(i,1);
+    localStorage.setItem('fila', JSON.stringify(fila));
+    iniciar();
+}
+
+// TRANSPORTE
+function iniciar(){
+    esconder(); document.getElementById('transporte').style.display='block';
+    info.innerText = `${atual.p} (${atual.o} → ${atual.d})`;
+    timerFunc();
+}
+
+function timerFunc(){
+    let t = 20*60;
+    let el = document.getElementById('transporte');
+
+    let c = setInterval(()=>{
+        let m = Math.floor(t/60);
+        let s = t%60;
+        timer.innerHTML = m+":"+(s<10?'0':'')+s;
+        t--;
+
+        if(t<0){
+            clearInterval(c);
+            el.classList.add('alerta');
+            alert('🚨 ATRASADO');
+        }
+    },1000);
+}
+
+function encerrar(){
+    let hist = JSON.parse(localStorage.getItem('hist'))||[];
+    hist.push(atual);
+    localStorage.setItem('hist', JSON.stringify(hist));
+    atual=null;
+    alert('Finalizado');
+    voltar();
+}
+
+// HISTÓRICO
+function verHistorico(){ esconder(); document.getElementById('historico').style.display='block'; carregarHist(); }
+
+function carregarHist(){
+    let hist = JSON.parse(localStorage.getItem('hist'))||[];
+    let ul = listaHist; ul.innerHTML='';
+
+    hist.forEach(item=>{
+        let li = document.createElement('li');
+        li.innerText = `${item.p} (${item.o} → ${item.d})`;
+        ul.appendChild(li);
+    });
+}
+</script>
 
 </body>
 </html>
