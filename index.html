@@ -1,279 +1,593 @@
 <!-- =========================
-LOC DISK - SISTEMA PROFISSIONAL COM DASHBOARD
+LOC DISK - SISTEMA PROFISSIONAL (RESPONSIVE SITE & MOBILE)
 ========================= -->
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LocDisk Pro</title>
-
+<title>LocDisk Pro - Painel Administrativo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-body {
-    font-family: Arial;
-    margin: 0;
-    background: #f4f6f9;
+:root {
+    --primary: #2e7d32;
+    --primary-light: #4caf50;
+    --secondary: #000000;
+    --bg-light: #f4f7f6;
+    --white: #ffffff;
+    --danger: #d32f2f;
+    --sidebar-width: 260px;
+    --transition: all 0.3s ease;
 }
 
-.header {
-    background: #2e7d32;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
+* { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+
+body { background-color: var(--bg-light); color: #333; height: 100vh; overflow: hidden; }
+
+/* LAYOUT ESTRUTURA */
+.main-wrapper { display: flex; height: 100vh; width: 100vw; }
+
+/* SIDEBAR (Desktop) */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--secondary);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    transition: var(--transition);
+    z-index: 100;
 }
 
-.container {
-    max-width: 420px;
-    margin: auto;
-    padding: 15px;
+.sidebar-header { padding: 0 20px 30px; text-align: center; }
+.sidebar-logo { font-size: 1.8rem; font-weight: 800; color: var(--primary-light); }
+
+.nav-menu { flex: 1; }
+.nav-item {
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: var(--transition);
+    color: #bbb;
+    text-decoration: none;
 }
+.nav-item:hover, .nav-item.active { background: #1a1a1a; color: var(--white); border-left: 4px solid var(--primary-light); }
+.nav-item i { width: 20px; text-align: center; }
 
-.card {
-    background: white;
-    border-radius: 15px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+/* MAIN CONTENT */
+.content-area { flex: 1; display: flex; flex-direction: column; overflow-y: auto; position: relative; }
 
-h2 { text-align: center; margin: 5px 0 10px; }
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin: 6px 0;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    border: none;
-    border-radius: 10px;
-    background: #2e7d32;
-    color: white;
-    font-weight: bold;
-}
-
-button:hover { background: #1b5e20; }
-
-.dashboard {
+.top-bar {
+    height: 70px;
+    background: var(--white);
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    align-items: center;
+    padding: 0 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.box {
-    flex: 1;
-    background: #e8f5e9;
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
+.user-profile { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.9rem; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; }
+
+/* SCREENS */
+.screen { display: none; padding: 30px; animation: fadeIn 0.4s ease; max-width: 1200px; margin: 0 auto; width: 100%; }
+.screen.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* CARDS & TABLES */
+.card { background: var(--white); border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 25px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.stat-card { background: var(--white); padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.stat-icon { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #777; font-size: 0.85rem; text-transform: uppercase; }
+td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+/* FORMS */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-group { margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; color: #555; }
+input, select, textarea {
+    width: 100%; padding: 12px; border: 1.5px solid #eee; border-radius: 8px; outline: none; transition: var(--transition);
+}
+input:focus { border-color: var(--primary); }
+
+button {
+    padding: 12px 25px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: var(--transition);
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #1b5e20; }
+.btn-secondary { background: var(--secondary); color: white; }
+.btn-outline { background: transparent; border: 1.5px solid #ddd; }
+
+/* LOGIN OVERLAY */
+#login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    display: flex; align-items: center; justify-content: center; z-index: 2000;
+}
+.login-card { background: white; width: 90%; max-width: 400px; padding: 40px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+
+/* MOBILE RESPONSIVITY */
+@media (max-width: 768px) {
+    .sidebar { position: fixed; left: -100%; height: 100%; }
+    .sidebar.mobile-open { left: 0; }
+    .form-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .top-bar { padding: 0 15px; }
+    .menu-toggle { display: block !important; }
 }
 
-#timer {
-    text-align: center;
-    font-size: 20px;
-    margin-top: 10px;
-}
+.menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
 
-.alerta {
-    background: red !important;
-    color: white;
-    animation: piscar 1s infinite;
-}
+/* TIMER UI */
+.active-transport-card { text-align: center; }
+.timer-display { font-size: 3rem; font-weight: 800; color: var(--primary); margin: 20px 0; }
+.timer-display.danger { color: var(--danger); animation: blink 1s infinite; }
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-@keyframes piscar {
-    0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;}
-}
 </style>
 </head>
-
 <body>
-<div class="header">🚑 LocDisk - Sistema Profissional</div>
-<div class="container">
 
-<!-- LOGIN -->
-<div class="card" id="login">
-<h2>Login</h2>
-<select id="tipo">
-<option value="admin">Administrador</option>
-<option value="func">Funcionário</option>
-</select>
-<button onclick="login()">Entrar</button>
-</div>
+    <!-- LOGIN SCREEN -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h1 style="text-align: center; margin-bottom: 10px; color: var(--primary);">LocDisk</h1>
+            <p style="text-align: center; color: #666; margin-bottom: 30px;">Entre com suas credenciais</p>
+            <div class="form-group">
+                <label>Usuário ou E-mail</label>
+                <input type="text" id="login-user" placeholder="Digite seu usuário">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="login-pass" placeholder="Digite sua senha">
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="handleLogin()">Entrar no Sistema</button>
+            <p id="login-error" style="color: var(--danger); font-size: 0.8rem; margin-top: 15px; text-align: center; display: none;">Credenciais inválidas!</p>
+        </div>
+    </div>
 
-<!-- DASHBOARD -->
-<div class="card" id="dashboard" style="display:none">
-<h2>Dashboard</h2>
-<div class="dashboard">
-<div class="box">Fila<br><span id="qFila">0</span></div>
-<div class="box">Ativos<br><span id="qAtivo">0</span></div>
-<div class="box">Finalizados<br><span id="qHist">0</span></div>
-</div>
-<button onclick="abrirCadastro()">Cadastrar Paciente</button>
-<button onclick="verFila()">Fila</button>
-<button onclick="verHistorico()">Histórico</button>
-<button onclick="logout()">Sair</button>
-</div>
+    <div class="main-wrapper" id="main-app" style="display: none;">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">LocDisk Pro</div>
+            </div>
+            <nav class="nav-menu">
+                <!-- Admin Only -->
+                <div id="nav-admin" style="display: none;">
+                    <div class="nav-item active" onclick="showScreen('screen-dashboard')">
+                        <i class="fas fa-chart-line"></i> Gestão Operacional
+                    </div>
+                    <div class="nav-item" onclick="showScreen('screen-manage-emps')">
+                        <i class="fas fa-users-cog"></i> Funcionários
+                    </div>
+                    <div class="nav-item" onclick="showScreen('screen-assign-transport')">
+                        <i class="fas fa-plus-circle"></i> Novo Transporte
+                    </div>
+                </div>
+                <!-- Employee Only -->
+                <div id="nav-emp" style="display: none;">
+                    <div class="nav-item active" onclick="showScreen('screen-my-tasks')">
+                        <i class="fas fa-tasks"></i> Meus Transportes
+                    </div>
+                </div>
+                <!-- Shared -->
+                <div class="nav-item" onclick="showScreen('screen-history')">
+                    <i class="fas fa-history"></i> Histórico
+                </div>
+            </nav>
+            <div style="padding: 20px;">
+                <button class="btn-outline" style="width: 100%; color: white; border-color: #444;" onclick="logout()">Sair</button>
+            </div>
+        </aside>
 
-<!-- CADASTRO -->
-<div class="card" id="cadastro" style="display:none">
-<h2>Novo Paciente</h2>
-<input id="paciente" placeholder="Paciente">
-<input id="origem" placeholder="Origem">
-<input id="destino" placeholder="Destino">
-<button onclick="cadastrar()">Cadastrar</button>
-<button onclick="voltar()">Voltar</button>
-</div>
+        <!-- MAIN CONTENT AREA -->
+        <main class="content-area">
+            
+            <header class="top-bar">
+                <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+                <div id="page-title" style="font-weight: 700; font-size: 1.2rem;">Gestão Operacional</div>
+                <div class="user-profile">
+                    <span id="user-display-name">Carregando...</span>
+                    <div class="avatar" id="user-initials">AD</div>
+                </div>
+            </header>
 
-<!-- FILA -->
-<div class="card" id="fila" style="display:none">
-<h2>Fila</h2>
-<ul id="listaFila"></ul>
-<button onclick="voltar()">Voltar</button>
-</div>
+            <!-- SCREENS -->
+            
+            <!-- ADMIN DASHBOARD -->
+            <section id="screen-dashboard" class="screen">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;"><i class="fas fa-clock"></i></div>
+                        <div><h4 id="stat-active">0</h4><p style="font-size: 0.7rem; color: #777;">Ativos</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fff3e0; color: #ef6c00;"><i class="fas fa-user-friends"></i></div>
+                        <div><h4 id="stat-pending">0</h4><p style="font-size: 0.7rem; color: #777;">Na Fila</p></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fce4ec; color: #c2185b;"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div><h4 id="stat-delayed">0</h4><p style="font-size: 0.7rem; color: #777;">Atrasados</p></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2>Transportes em Tempo Real</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Paciente</th>
+                                    <th>Funcionário</th>
+                                    <th>Status</th>
+                                    <th>Tempo</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-<!-- TRANSPORTE -->
-<div class="card" id="transporte" style="display:none">
-<h2>Em Transporte</h2>
-<p id="info"></p>
-<div id="timer"></div>
-<button onclick="encerrar()">Encerrar</button>
-</div>
+            <!-- MANAGE EMPLOYEES (ADMIN) -->
+            <section id="screen-manage-emps" class="screen">
+                <div class="card">
+                    <h2>Cadastrar Novo Funcionário</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome Completo</label><input type="text" id="emp-name"></div>
+                        <div class="form-group"><label>Usuário de Acesso</label><input type="text" id="emp-user"></div>
+                        <div class="form-group"><label>E-mail</label><input type="email" id="emp-email"></div>
+                        <div class="form-group"><label>Senha Inicial</label><input type="password" id="emp-pass"></div>
+                    </div>
+                    <button class="btn-primary" onclick="registerEmployee()">Salvar Funcionário</button>
+                </div>
+                <div class="card">
+                    <h2>Funcionários Cadastrados</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Nome</th><th>Usuário</th><th>Status</th><th>Ações</th></tr>
+                            </thead>
+                            <tbody id="emp-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-<!-- HISTÓRICO -->
-<div class="card" id="historico" style="display:none">
-<h2>Histórico</h2>
-<ul id="listaHist"></ul>
-<button onclick="voltar()">Voltar</button>
-</div>
+            <!-- ASSIGN TRANSPORT (ADMIN) -->
+            <section id="screen-assign-transport" class="screen">
+                <div class="card">
+                    <h2>Nova Solicitação de Transporte</h2>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome do Paciente</label><input type="text" id="tr-paciente"></div>
+                        <div class="form-group"><label>Responsável (Funcionário)</label>
+                            <select id="tr-assignee"></select>
+                        </div>
+                        <div class="form-group"><label>Origem (Quarto/Setor)</label><input type="text" id="tr-origem"></div>
+                        <div class="form-group"><label>Destino</label><input type="text" id="tr-destino"></div>
+                        <div class="form-group"><label>Tipo de Transporte</label>
+                            <select id="tr-tipo">
+                                <option value="Leito">Leito</option>
+                                <option value="Cadeira">Cadeira de Rodas</option>
+                                <option value="Maca">Maca</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Código de Segurança</label><input type="text" id="tr-sec-code"></div>
+                    </div>
+                    <button class="btn-primary" onclick="assignTransport()">Enviar para Funcionário</button>
+                </div>
+            </section>
 
-</div>
+            <!-- MY TASKS (EMPLOYEE) -->
+            <section id="screen-my-tasks" class="screen">
+                <div id="pending-tasks-container"></div>
+                <div id="active-task-container" style="display: none;">
+                    <div class="card active-transport-card">
+                        <h2 id="active-paciente-name">Paciente</h2>
+                        <p id="active-route">Origem -> Destino</p>
+                        <div class="timer-display" id="main-timer">20:00</div>
+                        <div class="form-group" style="max-width: 300px; margin: 0 auto 20px;">
+                            <label>Código de Finalização</label>
+                            <input type="text" id="finish-code-input" placeholder="Digite o código">
+                        </div>
+                        <button class="btn-primary" onclick="completeTransport()">Finalizar Entrega</button>
+                    </div>
+                </div>
+            </section>
 
-<script>
-let atual = null;
-let tipoUser = null;
+            <!-- HISTORY (SHARED) -->
+            <section id="screen-history" class="screen">
+                <div class="card">
+                    <h2>Histórico de Atividades</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Data</th><th>Paciente</th><th>Responsável</th><th>Tempo</th><th>Status</th></tr>
+                            </thead>
+                            <tbody id="history-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
 
-function login(){
-    tipoUser = document.getElementById('tipo').value;
-    document.getElementById('login').style.display='none';
-    document.getElementById('dashboard').style.display='block';
-    atualizarDashboard();
-}
+        </main>
+    </div>
 
-function logout(){ location.reload(); }
+    <script>
+        // DATA MODEL
+        let users = JSON.parse(localStorage.getItem('locdisk_users')) || [
+            { id: 1, name: 'Admin Principal', user: 'admin', pass: 'admin123', role: 'admin' }
+        ];
+        let transports = JSON.parse(localStorage.getItem('locdisk_transports')) || [];
+        let currentUser = null;
+        let activeTimer = null;
 
-function esconder(){
-    ['dashboard','cadastro','fila','historico','transporte'].forEach(id=>{
-        document.getElementById(id).style.display='none';
-    });
-}
-
-function voltar(){ esconder(); document.getElementById('dashboard').style.display='block'; atualizarDashboard(); }
-
-// DASHBOARD
-function atualizarDashboard(){
-    let fila = JSON.parse(localStorage.getItem('fila'))||[];
-    let hist = JSON.parse(localStorage.getItem('hist'))||[];
-
-    document.getElementById('qFila').innerText = fila.length;
-    document.getElementById('qAtivo').innerText = atual ? 1 : 0;
-    document.getElementById('qHist').innerText = hist.length;
-}
-
-// CADASTRO
-function abrirCadastro(){
-    if(tipoUser !== 'admin'){ alert('Apenas admin'); return; }
-    esconder(); document.getElementById('cadastro').style.display='block';
-}
-
-function cadastrar(){
-    let p = paciente.value;
-    let o = origem.value;
-    let d = destino.value;
-
-    let fila = JSON.parse(localStorage.getItem('fila'))||[];
-    fila.push({p,o,d});
-    localStorage.setItem('fila', JSON.stringify(fila));
-    alert('Cadastrado');
-}
-
-// FILA
-function verFila(){ esconder(); document.getElementById('fila').style.display='block'; carregarFila(); }
-
-function carregarFila(){
-    let fila = JSON.parse(localStorage.getItem('fila'))||[];
-    let ul = listaFila; ul.innerHTML='';
-
-    fila.forEach((item,i)=>{
-        let li = document.createElement('li');
-        li.innerHTML = `${item.p} <button onclick="aceitar(${i})">Aceitar</button>`;
-        ul.appendChild(li);
-    });
-}
-
-function aceitar(i){
-    let fila = JSON.parse(localStorage.getItem('fila'))||[];
-    atual = fila[i];
-    fila.splice(i,1);
-    localStorage.setItem('fila', JSON.stringify(fila));
-    iniciar();
-}
-
-// TRANSPORTE
-function iniciar(){
-    esconder(); document.getElementById('transporte').style.display='block';
-    info.innerText = `${atual.p} (${atual.o} → ${atual.d})`;
-    timerFunc();
-}
-
-function timerFunc(){
-    let t = 20*60;
-    let el = document.getElementById('transporte');
-
-    let c = setInterval(()=>{
-        let m = Math.floor(t/60);
-        let s = t%60;
-        timer.innerHTML = m+":"+(s<10?'0':'')+s;
-        t--;
-
-        if(t<0){
-            clearInterval(c);
-            el.classList.add('alerta');
-            alert('🚨 ATRASADO');
+        // AUTH
+        function handleLogin() {
+            const userVal = document.getElementById('login-user').value;
+            const passVal = document.getElementById('login-pass').value;
+            
+            const user = users.find(u => (u.user === userVal || u.email === userVal) && u.pass === passVal);
+            
+            if (user) {
+                currentUser = user;
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                initApp();
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
         }
-    },1000);
-}
 
-function encerrar(){
-    let hist = JSON.parse(localStorage.getItem('hist'))||[];
-    hist.push(atual);
-    localStorage.setItem('hist', JSON.stringify(hist));
-    atual=null;
-    alert('Finalizado');
-    voltar();
-}
+        function logout() {
+            location.reload();
+        }
 
-// HISTÓRICO
-function verHistorico(){ esconder(); document.getElementById('historico').style.display='block'; carregarHist(); }
+        // INIT
+        function initApp() {
+            document.getElementById('user-display-name').innerText = currentUser.name;
+            document.getElementById('user-initials').innerText = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('nav-admin').style.display = 'block';
+                showScreen('screen-dashboard');
+            } else {
+                document.getElementById('nav-emp').style.display = 'block';
+                showScreen('screen-my-tasks');
+            }
+            refreshAll();
+        }
 
-function carregarHist(){
-    let hist = JSON.parse(localStorage.getItem('hist'))||[];
-    let ul = listaHist; ul.innerHTML='';
+        // NAVIGATION
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            document.getElementById(id).classList.add('active');
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                if (item.getAttribute('onclick').includes(id)) item.classList.add('active');
+            });
 
-    hist.forEach(item=>{
-        let li = document.createElement('li');
-        li.innerText = `${item.p} (${item.o} → ${item.d})`;
-        ul.appendChild(li);
-    });
-}
-</script>
+            document.getElementById('page-title').innerText = document.querySelector(`.nav-item.active`)?.innerText.trim() || 'Sistema';
+            
+            if (window.innerWidth <= 768) toggleSidebar(false);
+            refreshAll();
+        }
 
+        function toggleSidebar(force) {
+            const sb = document.getElementById('sidebar');
+            if (force === false) sb.classList.remove('mobile-open');
+            else sb.classList.toggle('mobile-open');
+        }
+
+        // ADMIN FUNCTIONS
+        function registerEmployee() {
+            const name = document.getElementById('emp-name').value;
+            const user = document.getElementById('emp-user').value;
+            const email = document.getElementById('emp-email').value;
+            const pass = document.getElementById('emp-pass').value;
+
+            if (!name || !user || !pass) return alert('Campos obrigatórios faltando!');
+
+            users.push({ id: Date.now(), name, user, email, pass, role: 'emp' });
+            localStorage.setItem('locdisk_users', JSON.stringify(users));
+            alert('Funcionário cadastrado!');
+            refreshAll();
+        }
+
+        function assignTransport() {
+            const paciente = document.getElementById('tr-paciente').value;
+            const assigneeId = document.getElementById('tr-assignee').value;
+            const origem = document.getElementById('tr-origem').value;
+            const destino = document.getElementById('tr-destino').value;
+            const code = document.getElementById('tr-sec-code').value;
+
+            if (!paciente || !assigneeId || !code) return alert('Preencha todos os campos!');
+
+            const newTr = {
+                id: Date.now(),
+                paciente,
+                assigneeId: parseInt(assigneeId),
+                origem,
+                destino,
+                secCode: code,
+                status: 'pending',
+                createdAt: new Date().toISOString(),
+                startedAt: null,
+                finishedAt: null
+            };
+
+            transports.push(newTr);
+            localStorage.setItem('locdisk_transports', JSON.stringify(transports));
+            alert('Transporte enviado para o funcionário!');
+            showScreen('screen-dashboard');
+        }
+
+        // EMPLOYEE FUNCTIONS
+        function startTask(id) {
+            const tr = transports.find(t => t.id === id);
+            tr.status = 'active';
+            tr.startedAt = new Date().toISOString();
+            localStorage.setItem('locdisk_transports', JSON.stringify(transports));
+            refreshAll();
+        }
+
+        function completeTransport() {
+            const tr = transports.find(t => t.status === 'active' && t.assigneeId === currentUser.id);
+            const inputCode = document.getElementById('finish-code-input').value;
+
+            if (inputCode !== tr.secCode) return alert('Código de segurança incorreto!');
+
+            tr.status = 'completed';
+            tr.finishedAt = new Date().toISOString();
+            localStorage.setItem('locdisk_transports', JSON.stringify(transports));
+            alert('Transporte finalizado!');
+            refreshAll();
+        }
+
+        // REFRESH UI
+        function refreshAll() {
+            // Stats
+            if (currentUser.role === 'admin') {
+                document.getElementById('stat-active').innerText = transports.filter(t => t.status === 'active').length;
+                document.getElementById('stat-pending').innerText = transports.filter(t => t.status === 'pending').length;
+                
+                // Dashboard Table
+                const tbody = document.getElementById('dashboard-table-body');
+                tbody.innerHTML = '';
+                transports.filter(t => t.status !== 'completed').forEach(t => {
+                    const emp = users.find(u => u.id === t.assigneeId);
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${t.paciente}</td>
+                            <td>${emp?.name || '---'}</td>
+                            <td><span style="color: ${t.status === 'active' ? 'green' : 'orange'}">${t.status.toUpperCase()}</span></td>
+                            <td class="timer-cell" data-start="${t.startedAt}">--:--</td>
+                        </tr>
+                    `;
+                });
+
+                // Emp Table
+                const empTbody = document.getElementById('emp-table-body');
+                empTbody.innerHTML = '';
+                users.filter(u => u.role === 'emp').forEach(u => {
+                    empTbody.innerHTML += `
+                        <tr>
+                            <td>${u.name}</td>
+                            <td>${u.user}</td>
+                            <td>Ativo</td>
+                            <td><button onclick="deleteUser(${u.id})" style="background:none; color:red; padding:0;"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                });
+
+                // Select Assignee
+                const select = document.getElementById('tr-assignee');
+                select.innerHTML = '<option value="">Selecione um funcionário</option>';
+                users.filter(u => u.role === 'emp').forEach(u => {
+                    select.innerHTML += `<option value="${u.id}">${u.name}</option>`;
+                });
+            }
+
+            // Employee Tasks
+            if (currentUser.role === 'emp') {
+                const pendingContainer = document.getElementById('pending-tasks-container');
+                const activeContainer = document.getElementById('active-task-container');
+                
+                const active = transports.find(t => t.status === 'active' && t.assigneeId === currentUser.id);
+                const pending = transports.filter(t => t.status === 'pending' && t.assigneeId === currentUser.id);
+
+                if (active) {
+                    pendingContainer.style.display = 'none';
+                    activeContainer.style.display = 'block';
+                    document.getElementById('active-paciente-name').innerText = active.paciente;
+                    document.getElementById('active-route').innerText = `${active.origem} → ${active.destino}`;
+                    updateActiveTimer(active.startedAt);
+                } else {
+                    pendingContainer.style.display = 'block';
+                    activeContainer.style.display = 'none';
+                    pendingContainer.innerHTML = '<h2>Tarefas Pendentes</h2>';
+                    if (pending.length === 0) pendingContainer.innerHTML += '<p style="margin-top:20px; color:#999;">Nenhuma tarefa na fila.</p>';
+                    pending.forEach(t => {
+                        pendingContainer.innerHTML += `
+                            <div class="card">
+                                <h3>${t.paciente}</h3>
+                                <p>${t.origem} → ${t.destino} (${t.tipo})</p>
+                                <button class="btn-primary" onclick="startTask(${t.id})" style="margin-top:15px;">Iniciar Transporte</button>
+                            </div>
+                        `;
+                    });
+                }
+            }
+
+            // History
+            const histTbody = document.getElementById('history-table-body');
+            histTbody.innerHTML = '';
+            transports.filter(t => t.status === 'completed').reverse().forEach(t => {
+                const emp = users.find(u => u.id === t.assigneeId);
+                const dur = Math.floor((new Date(t.finishedAt) - new Date(t.startedAt)) / 60000);
+                histTbody.innerHTML += `
+                    <tr>
+                        <td>${new Date(t.createdAt).toLocaleDateString()}</td>
+                        <td>${t.paciente}</td>
+                        <td>${emp?.name || '---'}</td>
+                        <td>${dur} min</td>
+                        <td style="color:green">CONCLUÍDO</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateActiveTimer(startedAt) {
+            if (activeTimer) clearInterval(activeTimer);
+            const display = document.getElementById('main-timer');
+            
+            activeTimer = setInterval(() => {
+                const diff = Math.floor((new Date() - new Date(startedAt)) / 1000);
+                const limit = 20 * 60;
+                const remaining = limit - diff;
+                
+                const absRem = Math.abs(remaining);
+                const m = Math.floor(absRem / 60);
+                const s = absRem % 60;
+                const timeStr = `${remaining < 0 ? '-' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                
+                display.innerText = timeStr;
+                if (remaining < 0) display.classList.add('danger');
+                else display.classList.remove('danger');
+            }, 1000);
+        }
+
+        // Global interval for dashboard timers
+        setInterval(() => {
+            document.querySelectorAll('.timer-cell').forEach(cell => {
+                const start = cell.getAttribute('data-start');
+                if (!start || start === "null") return;
+                const diff = Math.floor((new Date() - new Date(start)) / 1000);
+                const m = Math.floor(diff / 60);
+                const s = diff % 60;
+                cell.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            });
+        }, 1000);
+
+        function deleteUser(id) {
+            if (confirm('Excluir este funcionário?')) {
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('locdisk_users', JSON.stringify(users));
+                refreshAll();
+            }
+        }
+    </script>
 </body>
 </html>
